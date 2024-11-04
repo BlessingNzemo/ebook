@@ -52,4 +52,15 @@ class ReviewFactory extends Factory
             ];
         });
     }
+
 }
+//$reviews =$book->reviews; signifie que reviews est une collection de reviews liées au livre
+
+//\App\Models\Book::with('reviews')->find(1); permet de récupérer le livre dont l'id est 1 avec ses reviews
+
+//$book->load('reviews'); permet de charger les reviews associées au livre
+//review = new Review(); crée une nouvelle instance de Review
+//$review = new \App\Models\Review(); permet de créer une nouvelle instance de Review
+//$review->review = 'Le nouveau révu crée!'; permet de définir la valeur de la propriété review de l'instance $review
+//$review->save(); permet d'enregistrer l'instance $review dans la base de données
+//$review->delete(); permet de supprimer l'instance $review de la base de données
