@@ -52,7 +52,6 @@ class ReviewFactory extends Factory
             ];
         });
     }
-
 }
 //$reviews =$book->reviews; signifie que reviews est une collection de reviews liées au livre
 
