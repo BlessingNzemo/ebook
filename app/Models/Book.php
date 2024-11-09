@@ -36,7 +36,7 @@ class Book extends Model
     {
         return $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
     }
-    
+
 
 
     public function scopeMinReviews(Builder $query, int $minReviews = 0): Builder|QueryBuilder
@@ -69,10 +69,24 @@ class Book extends Model
             ->minReviews(2);
     }
 
-    public function scopePopularLastMonth(Builder $query): EloquentBuilder
+     public function scopePopularLastMonth(Builder $query): Builder|QueryBuilder
     {
-        return $query->popular(now()->subMonths(1), now())
+        return $query->popular(now()->subMonth(), now())
+            ->highestRated(now()->subMonth(), now())
             ->minReviews(2);
+    }
+    public function scopePopularLast6Months(Builder $query): Builder|QueryBuilder
+    {
+        return $query->popular(now()->subMonths(6), now())
+            ->highestRated(now()->subMonths(6), now())
+            ->minReviews(5);
+    }
+
+    public function scopeHighestRatedLast6Months(Builder $query): Builder|QueryBuilder
+    {
+        return $query->highestRated(now()->subMonths(6), now())
+            ->popular(now()->subMonths(6), now())
+            ->minReviews(5);
     }
 
 

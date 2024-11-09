@@ -31,7 +31,7 @@
 
     </div>
 
-    <ul>
+    <ul>r
         @forelse ($books as $book)
             <li class="mb-4">
                 <div class="book-item">
@@ -42,7 +42,7 @@
                         </div>
                         <div>
                             <div class="book-rating">
-                                {{ number_format($book->rating, 1) }}
+                                {{ number_format($book->reviews_avg_rating, 1) }}
                             </div>
                             <div class="book-review-count">
                                 {{ $book->reviews_count }} {{ Str::plural('review', $book->reviews_count) }}
