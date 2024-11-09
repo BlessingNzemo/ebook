@@ -18,10 +18,12 @@ class Book extends Model
         return $this->hasMany(Review::class);
     }
 
+
     public function scopeTitle(EloquentBuilder $query, string $title)
     {
         return $query->where('title', 'LIKE', '%' . $title . '%');
     }
+
 
     public function scopePopular(EloquentBuilder $query, $from = null, $to = null): EloquentBuilder|QueryBuilder
     {
@@ -29,10 +31,12 @@ class Book extends Model
             ->orderBy('reviews_count', 'desc');
     }
 
+
     public function scopeHighestRated( Builder $query, $from = null, $to = null): EloquentBuilder
     {
         return $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
     }
+    
 
 
     public function scopeMinReviews(Builder $query, int $minReviews = 0): Builder|QueryBuilder
@@ -56,8 +60,20 @@ class Book extends Model
         }
 
         return $query;
+
     }
 
+    public function scopeHighestRatedLastMonth(Builder $query): EloquentBuilder
+    {
+        return $query->highestRated(now()->subMonths(1), now())
+            ->minReviews(2);
+    }
+
+    public function scopePopularLastMonth(Builder $query): EloquentBuilder
+    {
+        return $query->popular(now()->subMonths(1), now())
+            ->minReviews(2);
+    }
 
 
 }
