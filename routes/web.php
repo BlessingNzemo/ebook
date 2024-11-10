@@ -8,8 +8,14 @@ Route::get('/', function () {
     return redirect()->route('books.index');
 });
 
-Route::resource('books', BookController::class);
-Route::resource('books.reviews', ReviewController::class)->shallow();
+Route::resource('books', BookController::class)
+    ->only(['index', 'show']);
+Route::resource('books.reviews', ReviewController::class)
+    ->scoped(['review' => 'book'])
+    ->only(['create', 'store']);
+
+// Route::resource('books', BookController::class);
+// Route::resource('books.reviews', ReviewController::class)->shallow();
 
 // Choisir UNE des deux options suivantes (pas les deux) :
 

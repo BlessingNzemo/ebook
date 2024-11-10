@@ -29,7 +29,7 @@
 
     </div>
 
-    <ul>r
+    <ul>
         @forelse ($books as $book)
             <li class="mb-4">
                 <div class="book-item">
@@ -40,7 +40,7 @@
                         </div>
                         <div>
                             <div class="book-rating">
-                                <x-star-rating:rating="$book->reviews_avg_rating" />
+                                <x-star-rating :rating="$book->reviews_avg_rating"/>
                             </div>
                             <div class="book-review-count">
                                 {{ $book->reviews_count }} {{ Str::plural('review', $book->reviews_count) }}
@@ -50,6 +50,7 @@
                 </div>
             </li>
         @empty
+            <li class="text-gray-500">Aucun livre trouvé.</li>
         @endforelse
     </ul>
 @endsection

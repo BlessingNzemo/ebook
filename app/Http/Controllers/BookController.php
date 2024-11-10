@@ -27,20 +27,15 @@ class BookController extends Controller
         };
 
         $cacheKey = 'books:' . $filter . ':' . $title;
-        cache()->remember(
+
+        // Correction ici : assigner le résultat du cache à $books
+        $books = cache()->remember(
             $cacheKey,
             3600,
-            fn() =>
-            $books->get()
+            fn() => $books->get()
         );
 
         return view('books.index', ['books' => $books]);
-
-        // return view('books.index', compact('books')); signfifie que je veux retourner une vue et e vais passer la variable $books a ma vue
-
-        // $books = Book::when($title, fn($query, $title)=>
-        // $query->title($title)
-        // )->get();
     }
 
     /**
