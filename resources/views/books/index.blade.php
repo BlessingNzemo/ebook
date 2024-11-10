@@ -13,20 +13,18 @@
 
     <div class ="filter-container mb-4 flex">
         @php
-        $filters = [
-
-        ''=> 'Latest',
-        'popular_last_month'=> 'Popular Last Month',
-        'popular_last_6months'=> 'Top Rated',
-        'highest_rated_last_month'=>'Highest rated last month',
-        'highest_rated_last_6months'=>'Highest rated last 6 months',
-
-
-        ];
+            $filters = [
+                '' => 'Latest',
+                'popular_last_month' => 'Popular Last Month',
+                'popular_last_6months' => 'Top Rated',
+                'highest_rated_last_month' => 'Highest rated last month',
+                'highest_rated_last_6months' => 'Highest rated last 6 months',
+            ];
         @endphp
 
         @foreach ($filters as $key => $label)
-            <a href="{{route('books.index', [ ...request()->query() , 'filter' => $key]) }}" class="{{ request('filter') === $key || request('filter') === null && $key === '' ? 'filter-item-active' : 'filter-item' }}" >{{ $label }}</a>
+            <a href="{{ route('books.index', [...request()->query(), 'filter' => $key]) }}"
+                class="{{ request('filter') === $key || (request('filter') === null && $key === '') ? 'filter-item-active' : 'filter-item' }}">{{ $label }}</a>
         @endforeach
 
     </div>
@@ -42,7 +40,7 @@
                         </div>
                         <div>
                             <div class="book-rating">
-                                {{ number_format($book->reviews_avg_rating, 1) }}
+                                <x-star-rating:rating="$book->reviews_avg_rating" />
                             </div>
                             <div class="book-review-count">
                                 {{ $book->reviews_count }} {{ Str::plural('review', $book->reviews_count) }}

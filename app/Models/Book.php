@@ -25,16 +25,27 @@ class Book extends Model
     }
 
 
-    public function scopePopular(EloquentBuilder $query, $from = null, $to = null): EloquentBuilder|QueryBuilder
+    public function scopeWithReviewsCount(Builder $query, $from = null, $to = null): Builder|QueryBuilder
     {
-        return $query->withCount(['reviews'=> fn (Builder $q) =>$this->dateRangeFilter($q, $from, $to)])
-            ->orderBy('reviews_count', 'desc');
+        return $query->withCount(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)]);
     }
 
 
-    public function scopeHighestRated( Builder $query, $from = null, $to = null): EloquentBuilder
+    public function scopeWithAvgRating(Builder $query, $from = null, $to = null): Builder|QueryBuilder
     {
-        return $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
+        return $query->withAvg([
+            'reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)
+        ], 'rating');
+    }
+    public function scopePopular(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
+        return $query->withReviewsCount()
+            ->orderBy('reviews_count', 'desc');
+    }
+    public function scopeHighestRated(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
+        return $query->withAvgRating()
+            ->orderBy('reviews_avg_rating', 'desc');
     }
 
 
@@ -51,16 +62,13 @@ class Book extends Model
     {
         if ($from && !$to) {
             $query->where('created_at', '>=', $from);
-        }
-        elseif (!$from && $to) {
+        } elseif (!$from && $to) {
             $query->where('created_at', '<=', $to);
-        }
-        elseif ($from && $to) {
+        } elseif ($from && $to) {
             $query->whereBetween('created_at', [$from, $to]);
         }
 
         return $query;
-
     }
 
     public function scopeHighestRatedLastMonth(Builder $query): EloquentBuilder
@@ -69,7 +77,7 @@ class Book extends Model
             ->minReviews(2);
     }
 
-     public function scopePopularLastMonth(Builder $query): Builder|QueryBuilder
+    public function scopePopularLastMonth(Builder $query): Builder|QueryBuilder
     {
         return $query->popular(now()->subMonth(), now())
             ->highestRated(now()->subMonth(), now())
@@ -89,5 +97,13 @@ class Book extends Model
             ->minReviews(5);
     }
 
-
+    protected static function booted()
+    {
+        static::updated(
+            fn(Book $book) => cache()->forget('book:' . $book->id)
+        );
+        static::deleted(
+            fn(Book $book) => cache()->forget('book:' . $book->id)
+        );
+    }
 }
